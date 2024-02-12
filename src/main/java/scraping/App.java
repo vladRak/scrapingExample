@@ -16,7 +16,7 @@ public class App {
 	public static void main(String[] args) throws JsonMappingException, JsonProcessingException, MalformedURLException,
 			URISyntaxException, InterruptedException {
 
-		ExecutorService executor = Executors.newFixedThreadPool(2);
+		ExecutorService executor = Executors.newFixedThreadPool(3);
 
 		Set<String> sportNames = new HashSet<String>();
 		sportNames.add("Football");
