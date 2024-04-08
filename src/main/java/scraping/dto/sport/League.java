@@ -1,5 +1,6 @@
 package scraping.dto.sport;
 
+
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

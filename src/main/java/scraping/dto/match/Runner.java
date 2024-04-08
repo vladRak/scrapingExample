@@ -16,4 +16,9 @@ public class Runner extends AbstractScrapedObject {
 	public void setPrice(float price) {
 		this.price = price;
 	}
+
+	@Override
+	public String toString() {
+		return "\t\t\t" + getName() + ", " + getPrice() + ", " + getId() + "\n";
+	}
 }

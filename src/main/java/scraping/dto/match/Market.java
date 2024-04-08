@@ -18,5 +18,10 @@ public class Market extends AbstractScrapedObject {
 	public void setRunners(List<Runner> runners) {
 		this.runners = runners;
 	}
+	
+	@Override
+	public String toString() {
+		return "\t\t" + getName() + "\n";
+	}
 
 }
