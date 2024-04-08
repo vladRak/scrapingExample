@@ -1,6 +1,5 @@
 package scraping;
 
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,7 @@ public class Scraper {
 	private ObjectMapper mapper = new ObjectMapper();
 
 	private final ExecutorService executor;
-	
+
 	public Scraper() {
 		executor = Executors.newFixedThreadPool(3);
 	}
@@ -40,25 +39,23 @@ public class Scraper {
 		this.executor = executor;
 	}
 
-	public String scrap(Set<String> sportNames)	{
+	public String scrap(Set<String> sportNames) {
 
 		String vTag = getVTag();
 		List<Sport> sports = getSports();
 
 		List<CompletableFuture<String>> sportsResult = new ArrayList<CompletableFuture<String>>();
 
-		sports.stream()
-		.filter(sport -> sportNames.contains(sport.getName()))
-		.forEach(sport -> {
+		sports.stream().filter(sport -> sportNames.contains(sport.getName())).forEach(sport -> {
 			CompletableFuture<String> sportFuture = CompletableFuture.supplyAsync(() -> {
 				return processSport(sport, vTag);
 			}, executor);
 			sportsResult.add(sportFuture);
 		});
-		
+
 		return sportsResult.stream()
 				.map(CompletableFuture::join)
-				.collect(Collectors.joining(""));		
+				.collect(Collectors.joining(""));
 	}
 
 	private String getVTag() {
@@ -76,8 +73,7 @@ public class Scraper {
 		List<Sport> list = new ArrayList<>();
 		try {
 			String sportsJSON = request(SPORTS_URL);
-			list = mapper.readValue(sportsJSON, new TypeReference<List<Sport>>() {
-			});
+			list = mapper.readValue(sportsJSON, new TypeReference<List<Sport>>(){});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -91,12 +87,10 @@ public class Scraper {
 		String sportName = sport.getName();
 
 		sport.getRegions().forEach(region -> {
-			region.getLeagues().stream()
-			.filter(league -> league.isTop())
-			.forEach(league -> {
-				
+			region.getLeagues().stream().filter(league -> league.isTop()).forEach(league -> {
+
 				sBuffer.append(sportName + ", " + league.getName() + "\n");
-				
+
 				try {
 					String leagueQuery = String.format(LEAGUE_TMPL, vTag, league.getId());
 					String leagueMatchesJSON = request(leagueQuery);
@@ -109,12 +103,10 @@ public class Scraper {
 					String markersJSON = request(matchQuery);
 					Match markers = mapper.readValue(markersJSON, Match.class);
 
-					markers.getMarkets()
-					.forEach(marker -> {
+					markers.getMarkets().forEach(marker -> {
 						sBuffer.append(marker.toString());
 
-						marker.getRunners()
-						.forEach(runner -> {
+						marker.getRunners().forEach(runner -> {
 							sBuffer.append(runner.toString());
 						});
 					});
@@ -123,7 +115,7 @@ public class Scraper {
 				}
 			});
 		});
-		
+
 		return sBuffer.toString();
 	}
 
